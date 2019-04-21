@@ -20,7 +20,7 @@ void reshape(int w, int h);
 void drawBitmapText(char *string, float x, float y, float z)
 {
     char *c;
-    glRasterPos3f(x, y, z);//define position on the screen where to draw text.
+    glRasterPos3f(x, y, z);
 
     for (c = string; *c != '\0'; c++)
     {
@@ -136,14 +136,14 @@ void keyboard(unsigned char key, int x, int y)
 void menu(int value)
 {
      switch(value) {
-		case 0: 
-            glColor3f (1.0f, 1.0f, 1.0f);
+		case 0:
+			object=PLANET;
             break;
         case 1: 
-            glColor3f (1.0f, 0.0f, 0.0f);
+            object=WORLD;
             break;
         case 2: 
-            glColor3f (0.0f, 0.0f, 1.0f);
+            object=MONUMENT;
             break;
         case 3: 
             exit(0);
@@ -152,6 +152,10 @@ void menu(int value)
             object=MAINSCREEN;
             break;
 	}
+	
+	create();
+	draw();
+	glColor3f (1.0f, 1.0f, 1.0f);
      
 	glutPostRedisplay();   
 }
