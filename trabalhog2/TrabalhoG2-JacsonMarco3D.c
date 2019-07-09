@@ -208,42 +208,112 @@ void worldOption(unsigned char key){
 
 // função para desenhar a pirâmede
 void drawMonument(void){
-    glColor3f(0.6,0.3,0.1);
-    GLfloat circle_points = 1000;
+    glPushMatrix();
+glRotatef (ang,cmx + 0.0, 1.0, 0.0);
+{glBegin (GL_TRIANGLES);
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int i;
-	double angle;
+// Front
+glColor3f(1.0f, 0.0f, 0.0f);
+glVertex3f( 0.0f, 0.75f, 0.0f);
+glColor3f(0.0f, 0.75f, 0.0f);
+glVertex3f(-0.5f, 0.25f, 0.75f);
+glColor3f(0.0f, 0.0f, 1.0f);
+glVertex3f(0.5f, 0.25f, 0.75f);
 
-	glBegin(GL_POLYGON);
-	   for (i = 0; i < circle_points; i++) {
-		   angle = 5*PI*i/circle_points;
-		   glVertex2f(cmx+cos(angle)/6.5,cmy+sin(angle)/6.5);
-	   }
-	glEnd();
+// Right
+glColor3f(1.0f, 0.0f, 0.0f);
+glVertex3f(0.0f, 0.75f, 0.0f);
+glColor3f(0.0f, 0.0f, 1.0f);
+glVertex3f(0.5f, 0.25f, 0.75f);
+glColor3f(0.0f, 1.0f, 0.0f);
+glVertex3f(0.5f, 0.25f, -0.75f);
 
-	drawBitmapText("UTILIZE O ESPACO", -0.9, -0.1, 0);
-	drawBitmapText("Piramides do Egito", -0.9, -0.35, 0);
-	drawBitmapText("1 - Localizadas em Cairo", -0.9, -0.50, 0);
-	drawBitmapText("2 - Construidas em 2550 AC", -0.9, -0.65, 0);
-	drawBitmapText("3 - Uma das mais antigas do mundo", -0.9, -0.80, 0);
+// Back
+glColor3f(1.0f, 0.0f, 0.0f);
+glVertex3f(0.0f, 0.75f, 0.0f);
+glColor3f(0.0f, 1.0f, 0.0f);
+glVertex3f(0.5f, 0.25f, -0.75f);
+glColor3f(0.0f, 0.0f, 1.0f);
+glVertex3f(-0.5f, 0.25f, -0.75f);
+
+// Left
+glColor3f(1.0f,0.0f,0.0f);
+glVertex3f( 0.0f, 0.25f, 0.0f);
+glColor3f(0.0f,0.0f,1.0f);
+glVertex3f(-0.5f,0.25f,-0.75f);
+glColor3f(0.0f,1.0f,0.0f);
+glVertex3f(-0.5f,0.25f, 0.75f);
+
+glEnd();
+
+};
+
+glPopMatrix();
+
+GLfloat luzAmbiente[4]={0.1,0.1,0,1,0.1}; // RGBA = cor Branca sombreamento
+GLfloat luzDifusa[4]={0.8,0.8,0.8,1.0}; // "cor" R=0,8; G=0,8; B=0,8; a=1,0
+GLfloat luzEspecular[4]={1.0, 0.0, 0.0, 1.0}; // "brilho" RGBA= cor Branca
+GLfloat posicaoLuz[4]={0.0, 50.0, 50.0, 1.0}; // posição da luz difusa
+// Capacidade de brilho do material
+GLfloat especularidade[4]={1.0,1.0,1.0,1.0};
+GLint especMaterial = 60; // aumenta a intensidade da iluminação
+// Especifica que a cor de fundo da janela será preta
+//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+// Habilita o modelo de sombreamento Gouraud
+glShadeModel(GL_SMOOTH); //muda o estilo de sombreamento outro. -> GL_FLAT
+// Define a refletância do material
+glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
+// Define a concentração do brilho
+glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
+// Ativa o uso da luz ambiente
+glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+// Define os parâmetros da luz de número 0
+glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
+glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
+glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
+glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );
+// Habilita a definição da cor do material a partir da cor corrente
+glEnable(GL_COLOR_MATERIAL);
+//Habilita o uso de iluminação
+glEnable(GL_LIGHTING);
+// Habilita a luz de número 0
+glEnable(GL_LIGHT0);
+// Habilita o depth-buffering
+glEnable(GL_DEPTH_TEST);
+//desenha o triângulo
+
+ 
+
+glPushMatrix();
+// definida a cor
+glColor3f(0, 0, 0);
+// chamada a função para escrever passando texto suas respectivas posições
+drawBitmapText("UTILIZE O ESPACO", -0.9, -0.1, 0);
+drawBitmapText("Piramides do Egito", -0.9, -0.35, 0);
+drawBitmapText("1 - Localizadas em Cairo", -0.9, -0.50, 0);
+drawBitmapText("2 - Construidas em 2550 AC", -0.9, -0.65, 0);
+drawBitmapText("3 - Uma das mais antigas do mundo", -0.9, -0.80, 0);
+glPopMatrix();
 }
 
 void monumentOption(int key){
-    // opções de decisão do teclado com incremento de 0.01
-    if(key == GLUT_KEY_UP) { //cmx += 0.01f;
-		ang+=3;
-    }
-    if(key == GLUT_KEY_DOWN) { //cmy -= 0.01f;
-		ang-=3;
-    }
-    if (key == GLUT_KEY_RIGHT) { //cmx += 0.01f;
-		ang+=3;
-    }
-    if (key == GLUT_KEY_LEFT) { //cmx -= 0.01f;
-		ang-=3;
-    }
-    // faz uma nova exibição atualizando o desenho e limpando o anterior
-    glutPostRedisplay();
+// opções de decisão do teclado com incremento de 0.01
+if(key == GLUT_KEY_UP) { //cmx += 0.01f;
+ang+=3;}
+if(key == GLUT_KEY_DOWN) { //cmy -= 0.01f;
+ang-=3;}
+if (key == GLUT_KEY_RIGHT) { //cmx += 0.01f;
+ang+=3;}
+if (key == GLUT_KEY_LEFT) { //cmx -= 0.01f;
+ang-=3;}
+// definição que delimita a translação nos eixos x e y
+//if (cmx < -0.80f){ cmx = -0.80f;}
+//if (cmx > 0.80f) { cmx = 0.80f; }
+//if (cmy > 0.80f) { cmy = 0.80f; }
+//if (cmy < 0.20f) { cmy = 0.20f; }
+// faz uma nova exibição atualizando o desenho e limpando o anterior
+glutPostRedisplay();
 }
 
 //função para escolhas de objetos
